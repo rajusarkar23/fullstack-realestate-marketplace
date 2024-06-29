@@ -81,11 +81,11 @@ export const google = async (req, res, next) => {
 
       await newUser.save();
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
-      // const { password: pass, ...restData } = user;
+      const { password: pass, ...restData } = newUser._doc;
       res
         .cookie("access_token", token, { httpOnly: true })
         .status(201)
-        .json("user created");
+        .json(restData);
     }
   } catch (error) {
     next(error);
