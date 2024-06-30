@@ -15,6 +15,7 @@ function Profile() {
   const [file, setFile] = useState(undefined);
   const [filePercentage, SetFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
+  const [fileSizeError, setFileSizeError] = useState(false);
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
   console.log(formData);
@@ -37,14 +38,14 @@ function Profile() {
       "state_changed",
       (snapshot) => {
         const oneMBInBytes = 1024000;
+        if (snapshot.totalBytes > oneMBInBytes * 2) {
+          uploadFile.pause();
+          setFileSizeError(true);
+        }
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         SetFilePercentage(Math.round(progress));
         // console.log("Upload is " + progress + "% done");
-        if (snapshot.totalBytes > oneMBInBytes * 2) {
-          navigate(0);
-          window.alert("image must be under 2mb");
-        }
       },
       (error) => {
         setFileUploadError(true);
@@ -70,6 +71,7 @@ function Profile() {
           ref={fileRef}
           hidden
           accept="image/*"
+          onClick={() => setFileSizeError(false)}
           onChange={(e) => setFile(e.target.files[0])}
         />
 
@@ -82,6 +84,8 @@ function Profile() {
         <p className="text-sm self-center">
           {fileUploadError ? (
             <span className="text-red-700">Error while uploading image</span>
+          ) : fileSizeError ? (
+            <span className="text-red-700">Check image size</span>
           ) : filePercentage > 0 && filePercentage < 100 ? (
             <span className="text-slate-700">
               {`Uploading ${filePercentage}%`}
