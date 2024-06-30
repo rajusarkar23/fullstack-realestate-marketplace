@@ -7,7 +7,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase.js";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const fileRef = useRef(null);
@@ -17,7 +17,7 @@ function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [fileSizeError, setFileSizeError] = useState(false);
   const [formData, setFormData] = useState({});
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   console.log(formData);
   console.log(filePercentage);
   console.log(fileUploadError);
