@@ -9,14 +9,14 @@ dotenv.config();
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("DB connected");
+    console.log("DB connected!!!");
   })
   .catch((err) => {
-    console.log("error");
+    console.log("error in connecting db",err);
   });
-
+// => ctreate express app
 const app = express();
-// => allow the json data
+// => allow the json data to our express app
 app.use(express.json());
 
 app.listen(3000, () => {
