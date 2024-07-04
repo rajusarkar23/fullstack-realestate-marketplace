@@ -24,10 +24,10 @@ function Profile() {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
   // => LOGS
-  console.log(formData);
-  console.log(filePercentage);
-  console.log(fileUploadError);
-
+  // console.log(formData);
+  // console.log(filePercentage);
+  // console.log(fileUploadError);
+// => run the handleFileUpload func if there is any change in file
   useEffect(() => {
     if (file) {
       handleFileUpload();
@@ -63,11 +63,11 @@ function Profile() {
       }
     );
   };
-
+  // => handle Changes in form
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
-
+  // => handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
