@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import {
   getDownloadURL,
@@ -7,17 +7,23 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase.js";
-// import { useNavigate } from "react-router-dom";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} from "../redux/user/userSlice.js";
 
 function Profile() {
   const fileRef = useRef(null);
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined);
   const [filePercentage, SetFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [fileSizeError, setFileSizeError] = useState(false);
   const [formData, setFormData] = useState({});
-  // const navigate = useNavigate();
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const dispatch = useDispatch();
+  // => LOGS
   console.log(formData);
   console.log(filePercentage);
   console.log(fileUploadError);
@@ -58,6 +64,35 @@ function Profile() {
     );
   };
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (data.success == false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
+  };
+
   return (
     <div
       className="p-3 max-w-lg mx-auto
@@ -65,7 +100,7 @@ function Profile() {
     >
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
 
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="file"
           ref={fileRef}
@@ -87,8 +122,8 @@ function Profile() {
           ) : fileSizeError ? (
             <span className="text-red-700">Check image size</span>
           ) : filePercentage > 0 && filePercentage < 100 ? (
-            <span className="text-slate-700">
-              {`Uploading ${filePercentage}%`}
+            <span className="text-slate-700 font-bold">
+              {`Uploading ${filePercentage}%.....`}
             </span>
           ) : filePercentage == 100 ? (
             <span className="text-green-700">Image uploaded successfully</span>
@@ -99,14 +134,18 @@ function Profile() {
         <input
           type="text"
           placeholder="username"
+          defaultValue={currentUser.username}
           id="username"
           className="border p-3 rounded-lg"
+          onChange={handleChange}
         />
         <input
           type="email"
           placeholder="email"
+          defaultValue={currentUser.email}
           id="email"
           className="border p-3 rounded-lg"
+          onChange={handleChange}
         />
         <input
           type="password"
@@ -114,8 +153,11 @@ function Profile() {
           id="password"
           className="border p-3 rounded-lg"
         />
-        <button className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-75">
-          Update
+        <button
+          disabled={loading}
+          className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-75"
+        >
+          {loading ? "Loading" : "Update"}
         </button>
       </form>
 
@@ -123,6 +165,10 @@ function Profile() {
         <span className="text-red-700 cursor-pointer">Delete account</span>
         <span className="text-red-700 cursor-pointer">Signout </span>
       </div>
+      <p className="text-red-700 font-bold">{error ? error : ""}</p>
+      <p className="text-green-700 font-bold">
+        {updateSuccess ? "Success in updating profile" : ""}
+      </p>
     </div>
   );
 }
