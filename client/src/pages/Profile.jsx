@@ -11,6 +11,9 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
+  deleteFailure,
+  deleteUserStart,
+  deleteUserSuccess,
 } from "../redux/user/userSlice.js";
 
 function Profile() {
@@ -27,7 +30,7 @@ function Profile() {
   // console.log(formData);
   // console.log(filePercentage);
   // console.log(fileUploadError);
-// => run the handleFileUpload func if there is any change in file
+  // => run the handleFileUpload func if there is any change in file
   useEffect(() => {
     if (file) {
       handleFileUpload();
@@ -67,7 +70,7 @@ function Profile() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
-  // => handle form submission
+  // => handle update form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -90,6 +93,23 @@ function Profile() {
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data === false) {
+        dispatch(deleteFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteFailure(error.message));
     }
   };
 
@@ -162,7 +182,12 @@ function Profile() {
       </form>
 
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer">Delete account</span>
+        <span
+          onClick={handleDeleteUser}
+          className="text-red-700 cursor-pointer"
+        >
+          Delete account
+        </span>
         <span className="text-red-700 cursor-pointer">Signout </span>
       </div>
       <p className="text-red-700 font-bold">{error ? error : ""}</p>
