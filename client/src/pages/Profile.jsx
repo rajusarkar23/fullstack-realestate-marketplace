@@ -164,8 +164,8 @@ function Profile() {
             <span className="text-slate-700 font-bold">
               {`Uploading ${filePercentage}%.....`}
             </span>
-          ) : filePercentage == 100 ? (
-            <span className="text-green-700">Image uploaded successfully</span>
+          ) : formData.avatar ? (
+            <span className="text-green-700 font-bold">Success</span>
           ) : (
             ""
           )}
@@ -191,6 +191,7 @@ function Profile() {
           placeholder="password"
           id="password"
           className="border p-3 rounded-lg"
+          onChange={handleChange}
         />
         <button
           disabled={loading}

@@ -1,6 +1,6 @@
 import { User } from "../models/user.models.js";
 import { errorHandler } from "../utils/error.js";
-import brcryptjs from "bcryptjs";
+import bcryptjs from "bcryptjs";
 
 export const test = (req, res) => {
   res.json({
@@ -9,14 +9,14 @@ export const test = (req, res) => {
 };
 // => update user controller
 export const updateUser = async (req, res, next) => {
-  if (req.user.id != req.params.id)
+  if (req.user.id !== req.params.id)
     return next(errorHandler(401, "Not Authenticated to update"));
   try {
     if (req.body.password) {
-      req.body.password = brcryptjs.hashSync(req.body.password, 10);
+      req.body.password = bcryptjs.hashSync(req.body.password, 10);
     }
 
-    const updateUser = await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
         $set: {
@@ -28,9 +28,11 @@ export const updateUser = async (req, res, next) => {
       },
       { new: true }
     );
-    const { password, ...rest } = updateUser._doc;
+    const { password, ...rest } = updatedUser._doc;
 
     res.status(200).json(rest);
+    // res.status(200).json(password);
+    // console.log(password, rest);
   } catch (error) {
     next(error);
   }
