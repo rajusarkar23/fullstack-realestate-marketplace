@@ -8,48 +8,65 @@ import {
 import { app } from "../firebase.js";
 
 function CreateListing() {
+  // => Taking files as array
   const [files, setFiles] = useState([]);
+  // => Taking form data as array
   const [formData, setFormData] = useState({
     imageUrls: [],
   });
+  // => State to manage imageUpload error
   const [imageUploadError, setImageUploadError] = useState(false);
+  // => To get current uploading state
   const [uploading, setUploading] = useState(false);
   // console.log(files);
   console.log(formData);
+  // => Handle the image upload
   const handleImageSubmit = (e) => {
+    // => Set file length
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+      // => Set the uploading state to true
       setUploading(true);
+      // => Take an array, promises
       const promises = [];
-
+      // => Loops the files and set the files to promises array
       for (let i = 0; i < files.length; i++) {
+        // => Loop through each file and call storeImage func for each file
         promises.push(storeImage(files[i]));
       }
+      // => Wait for all the promises in the promises array to resolve
       Promise.all(promises)
-        .then((urls) => {
+        // => Then update the stFormData
+        .then((uris) => {
           setFormData({
             ...formData,
-            imageUrls: formData.imageUrls.concat(urls),
+            imageUrls: formData.imageUrls.concat(uris),
           });
+          // => setImageUploadError(false), setUploading(false);
           setImageUploadError(false);
           setUploading(false);
         })
+        // => catch error if any
         .catch((err) => {
           setImageUploadError("Image upload failed please try again");
           setUploading(false);
         });
-      // setUploadProgress(progress)
-    } else {
+    }
+    // => for else
+    else {
       setImageUploadError("Images should be greater than 0 and lesser than 6");
       setUploading(false);
     }
   };
 
   const storeImage = async (file) => {
+    // => return a new Promise, allowing for asynchronous operations (uploading the file and obtaining the URL)
     return new Promise((resolve, reject) => {
+      // => Firebase configuration
       const storage = getStorage(app);
       const fileName = new Date().getTime() + file.name;
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, file);
+      // => Upload on firebase
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -58,8 +75,10 @@ function CreateListing() {
           console.log(`Upload is ${progress}% done`);
         },
         (error) => {
+          // => rejects the promise and throw the error.
           reject(error);
         },
+        // => Get the download url
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             resolve(downloadURL);
@@ -68,7 +87,9 @@ function CreateListing() {
       );
     });
   };
+  // => Delete image func
   const handleDeleteImage = (index) => {
+    // => allow all imgs except matched id
     setFormData({
       ...formData,
       imageUrls: formData.imageUrls.filter((_, i) => i !== index),
@@ -200,7 +221,7 @@ function CreateListing() {
               }}
             />
             <button
-              className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-95"
+              className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 uppercase disabled:opacity-95"
               disabled={uploading}
               type="button"
               onClick={handleImageSubmit}
@@ -211,6 +232,7 @@ function CreateListing() {
           <p className="text-red-700 font-bold">
             {imageUploadError && imageUploadError}
           </p>
+          {/* If formdata length greater than 0 map through the urls  */}
           {formData.imageUrls.length > 0 &&
             formData.imageUrls.map((url, index) => (
               <div
