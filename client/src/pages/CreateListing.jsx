@@ -209,7 +209,7 @@ function CreateListing() {
           <p className="text-green-700 font-bold">{uploadProgress && uploadProgress}</p>
           {
             formData.imageUrls.length > 0 && formData.imageUrls.map((url) => (
-              <div className="flex justify-between p-3 border items-center">
+              <div key={url} className="flex justify-between p-3 border items-center">
                 <img src={url} alt="listing-imgs" className="w-40 h-60 object-contain rounded-lg"/>
                 <button className="bg-red-400 rounded-md px-2 font-bold text-white uppercase">Delete</button>
               </div>
