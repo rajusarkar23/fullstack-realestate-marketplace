@@ -13,11 +13,12 @@ function CreateListing() {
     imageUrls: [],
   });
   const [imageUploadError, setImageUploadError] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState("");
+  const [uploading, setUploading] = useState(false);
   // console.log(files);
   console.log(formData);
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+      setUploading(true);
       const promises = [];
 
       for (let i = 0; i < files.length; i++) {
@@ -30,13 +31,16 @@ function CreateListing() {
             imageUrls: formData.imageUrls.concat(urls),
           });
           setImageUploadError(false);
+          setUploading(false);
         })
         .catch((err) => {
           setImageUploadError("Image upload failed please try again");
+          setUploading(false);
         });
       // setUploadProgress(progress)
     } else {
       setImageUploadError("Images should be greater than 0 and lesser than 6");
+      setUploading(false);
     }
   };
 
@@ -52,12 +56,6 @@ function CreateListing() {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log(`Upload is ${progress}% done`);
-          // setUploadProgress(`Uploading ${progress}%..`);
-          if (progress == 100) {
-            setUploadProgress(`Done`);
-          } else {
-            setUploadProgress(`Uploading ${progress}%`);
-          }
         },
         (error) => {
           reject(error);
@@ -68,6 +66,12 @@ function CreateListing() {
           });
         }
       );
+    });
+  };
+  const handleDeleteImage = (index) => {
+    setFormData({
+      ...formData,
+      imageUrls: formData.imageUrls.filter((_, i) => i !== index),
     });
   };
 
@@ -197,30 +201,32 @@ function CreateListing() {
             />
             <button
               className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-95"
+              disabled={uploading}
               type="button"
               onClick={handleImageSubmit}
             >
-              Upload
+              {uploading ? "Uploading" : "Upload"}
             </button>
           </div>
           <p className="text-red-700 font-bold">
             {imageUploadError && imageUploadError}
           </p>
-          <p className="text-green-700 font-bold">
-            {uploadProgress && uploadProgress}
-          </p>
           {formData.imageUrls.length > 0 &&
-            formData.imageUrls.map((url) => (
+            formData.imageUrls.map((url, index) => (
               <div
                 key={url}
-                className="flex justify-between p-3 border items-center"
+                className="flex justify-between p-3 border bg-gray-50 items-center rounded-lg"
               >
                 <img
                   src={url}
                   alt="listing-imgs"
-                  className="w-40 h-60 object-contain rounded-lg"
+                  className="w-20 h-20 object-contain rounded-lg"
                 />
-                <button className="bg-red-400 rounded-md px-2 font-bold text-white uppercase">
+                <button
+                  type="buttom"
+                  onClick={() => handleDeleteImage(index)}
+                  className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 uppercase"
+                >
                   Delete
                 </button>
               </div>
