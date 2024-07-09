@@ -53,10 +53,10 @@ function CreateListing() {
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log(`Upload is ${progress}% done`);
           // setUploadProgress(`Uploading ${progress}%..`);
-          if (progress==100) {
-            setUploadProgress(`Done`)
-          } else{
-            setUploadProgress(`Uploading ${progress}%`)
+          if (progress == 100) {
+            setUploadProgress(`Done`);
+          } else {
+            setUploadProgress(`Uploading ${progress}%`);
           }
         },
         (error) => {
@@ -206,15 +206,25 @@ function CreateListing() {
           <p className="text-red-700 font-bold">
             {imageUploadError && imageUploadError}
           </p>
-          <p className="text-green-700 font-bold">{uploadProgress && uploadProgress}</p>
-          {
-            formData.imageUrls.length > 0 && formData.imageUrls.map((url) => (
-              <div key={url} className="flex justify-between p-3 border items-center">
-                <img src={url} alt="listing-imgs" className="w-40 h-60 object-contain rounded-lg"/>
-                <button className="bg-red-400 rounded-md px-2 font-bold text-white uppercase">Delete</button>
+          <p className="text-green-700 font-bold">
+            {uploadProgress && uploadProgress}
+          </p>
+          {formData.imageUrls.length > 0 &&
+            formData.imageUrls.map((url) => (
+              <div
+                key={url}
+                className="flex justify-between p-3 border items-center"
+              >
+                <img
+                  src={url}
+                  alt="listing-imgs"
+                  className="w-40 h-60 object-contain rounded-lg"
+                />
+                <button className="bg-red-400 rounded-md px-2 font-bold text-white uppercase">
+                  Delete
+                </button>
               </div>
-            ))
-          }
+            ))}
           <button className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opa. disabled:opacity-65">
             Create Listing
           </button>
