@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 import {
   getDownloadURL,
   getStorage,
@@ -31,6 +31,8 @@ function Profile() {
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
+  const [showListingError, setShowlIstingError] = useState(false);
+  const [userListing, setUserListing] = useState([]);
   // => LOGS
   // console.log(formData);
   // console.log(filePercentage);
@@ -133,6 +135,20 @@ function Profile() {
     }
   };
 
+  const handleShowListing = async () => {
+    try {
+      setShowlIstingError(false);
+      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        return;
+      }
+      setUserListing(data);
+    } catch (error) {
+      showListingError(true);
+    }
+  };
+
   return (
     <div
       className="p-3 max-w-lg mx-auto
@@ -200,8 +216,11 @@ function Profile() {
         >
           {loading ? "Loading" : "Update"}
         </button>
-        <Link to= {"/create-listing"} className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-90">
-        Create Listing
+        <Link
+          to={"/create-listing"}
+          className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-90"
+        >
+          Create Listing
         </Link>
       </form>
 
@@ -213,13 +232,44 @@ function Profile() {
           Delete account
         </span>
         <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
-          Signout{" "}
+          Signout
         </span>
       </div>
       <p className="text-red-700 font-bold">{error ? error : ""}</p>
       <p className="text-green-700 font-bold">
         {updateSuccess ? "Success in updating profile" : ""}
       </p>
+      <button onClick={handleShowListing} className="text-green-700 w-full">
+        Show Listings
+      </button>
+      <p>{showListingError ? "Error in showing listings" : ""}</p>
+      {userListing &&
+        userListing.length > 0 &&
+        userListing.map((listing) => (
+          <div
+            key={listing._id}
+            className="border rounded-lg p-3 flex justify-between items-center"
+          >
+            <Link to={`/listing/${listing._id}`}>
+              <img
+                src={listing.imageUrls[0]}
+                alt="listing cover"
+                className="h-16 w-16 object-contain rounded-lg"
+              />
+            </Link>
+            <Link className="flex-1" to={`/listing/${listing._id}`}>
+              <p className="truncate hover:underline">{listing.name}</p>
+            </Link>
+
+            <div className="flex flex-col">
+            <button className="text-red-700 font-bold uppercase">
+                Delete
+              </button> <button className="text-green-700 font-bold uppercase">
+                Edit
+              </button>
+            </div>
+          </div>
+        ))}
     </div>
   );
 }
