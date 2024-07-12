@@ -166,7 +166,7 @@ function CreateListing() {
 
       const data = await res.json();
       setLoading(false);
-      navigate(`/listing/${data._id}`)
+      navigate(`/listings/${data._id}`);
       if (data.success === false) {
         setError(data.message);
       }
