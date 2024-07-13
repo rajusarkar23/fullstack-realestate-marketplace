@@ -145,7 +145,7 @@ function Profile() {
       }
       setUserListing(data);
     } catch (error) {
-      showListingError(true);
+      setShowlIstingError(true);
     }
   };
 
