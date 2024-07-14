@@ -269,14 +269,14 @@ function Profile() {
             key={listing._id}
             className="border rounded-lg p-3 flex justify-between items-center"
           >
-            <Link to={`/listing/${listing._id}`}>
+            <Link to={`/listings/${listing._id}`}>
               <img
                 src={listing.imageUrls[0]}
                 alt="listing cover"
                 className="h-16 w-16 object-contain rounded-lg"
               />
             </Link>
-            <Link className="flex-1" to={`/listing/${listing._id}`}>
+            <Link className="flex-1" to={`/listings/${listing._id}`}>
               <p className="truncate hover:underline">{listing.name}</p>
             </Link>
 
