@@ -56,12 +56,25 @@ export const getUserListing = async (req, res, next) => {
   // console.log(`"userID": ${req.user.id}, "paramID: ${req.params.id}"`);
   if (req.user.id === req.params.id) {
     try {
-      const listings = await Listing.find({userRef: req.params.id})
-      res.status(200).json(listings)
+      const listings = await Listing.find({ userRef: req.params.id });
+      res.status(200).json(listings);
     } catch (error) {
-      next(error)
+      next(error);
     }
-  } else{
-    return next(errorHandler(401, "You can only view your listings."))
+  } else {
+    return next(errorHandler(401, "You can only view your listings."));
   }
-}
+};
+
+export const getPublicUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return next(errorHandler(404, "User not found"));
+
+    const { password: pass, ...rest } = user._doc;
+
+    res.status(200).json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
