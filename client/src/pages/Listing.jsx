@@ -88,7 +88,7 @@ function Listing() {
           <div className="flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4">
             {listing.offer && (
               <p className="text-2xl font-semibold">
-                {listing.name} - ${listing.regularPrice - listing.discountPrice}{" "}
+                {listing.name} - ${listing.regularPrice - listing.discountPrice}
                 {listing.type === "rent" && " /month"}
               </p>
             )}
