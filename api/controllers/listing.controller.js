@@ -1,6 +1,7 @@
 import { Listing } from "../models/listing.models.js";
 import { errorHandler } from "../utils/error.js";
 
+// => create listing function
 export const createListing = async (req, res, next) => {
   try {
     const listing = await Listing.create(req.body);
@@ -10,6 +11,7 @@ export const createListing = async (req, res, next) => {
   }
 };
 
+// => Delete listing function
 export const deleteListing = async (req, res, next) => {
   const listing = await Listing.findById(req.params.id);
   // console.log(req.params.id);
@@ -29,6 +31,7 @@ export const deleteListing = async (req, res, next) => {
   }
 };
 
+// => Update listing function
 export const updateListing = async (req, res, next) => {
   const listing = await Listing.findById(req.params.id);
   if (!listing) {
@@ -51,6 +54,7 @@ export const updateListing = async (req, res, next) => {
   }
 };
 
+// => getListingById for the public pages
 export const getListingById = async (req, res, next) => {
   try {
     const listing = await Listing.findById(req.params.id);
@@ -62,6 +66,7 @@ export const getListingById = async (req, res, next) => {
     next(error);
   }
 };
+
 // => getListings for search
 export const getListings = async (req, res, next) => {
   try {
