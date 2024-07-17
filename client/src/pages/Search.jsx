@@ -11,7 +11,44 @@ function Search() {
     order: "desc",
   });
 
-  const handleChange = (e) => {};
+  console.log(sideBarData);
+
+  const handleChange = (e) => {
+    if (
+      e.target.id === "all" ||
+      e.target.id === "rent" ||
+      e.target.id === "sale"
+    ) {
+      // => keep prev and save the target.id data
+      setSideBarData({ ...sideBarData, type: e.target.id });
+    }
+
+    if (e.target.id === "searchTerm") {
+        // => same as above
+      setSideBarData({ ...sideBarData, searchTerm: e.target.value });
+    }
+    if (
+      e.target.id === "parking" ||
+      e.target.id === "furnished" ||
+      e.target.id === "offer"
+    ) {
+      setSideBarData({
+        ...sideBarData,
+        [e.target.id]:
+          // => e.target.checked = boolean or e.target.checked = "string"
+          e.target.checked || e.target.checked === "true" ? true : false,
+      });
+    }
+
+    if (e.target.id === "sort_order") {
+        // => sort by created at
+        const sort = e.target.value.split("_")[0] || "created_at"
+        // => sorting order set to desc
+        const order = e.target.value.split("_")[1] || "desc"
+
+        setSideBarData({...sideBarData, sort, order})
+    }
+  };
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -38,7 +75,7 @@ function Search() {
                 id="all"
                 className="w-5"
                 onChange={handleChange}
-                checked={sideBarData.type === "all"}
+                checked={sideBarData.type === "all"} // checked if type is all
               />
               <span>Rent & Sale</span>
             </div>
@@ -48,7 +85,7 @@ function Search() {
                 id="rent"
                 className="w-5"
                 onChange={handleChange}
-                checked={sideBarData.type === "rent"}
+                checked={sideBarData.type === "rent"} // checked if type is rent
               />
               <span>Rent</span>
             </div>
@@ -58,7 +95,7 @@ function Search() {
                 id="sale"
                 className="w-5"
                 onChange={handleChange}
-                checked={sideBarData.type === "sale"}
+                checked={sideBarData.type === "sale"} // checked if type is sale
               />
               <span>Sale</span>
             </div>
@@ -68,7 +105,7 @@ function Search() {
                 id="offer"
                 className="w-5"
                 onChange={handleChange}
-                checked={sideBarData.offer}
+                checked={sideBarData.offer} // checked if offer is true
               />
               <span>Offer</span>
             </div>
@@ -81,7 +118,7 @@ function Search() {
                 id="parking"
                 className="w-5"
                 onChange={handleChange}
-                checked={sideBarData.parking}
+                checked={sideBarData.parking} // checked if parking is true
               />
               <span>Parking</span>
             </div>
@@ -91,7 +128,7 @@ function Search() {
                 id="furnished"
                 className="w-5"
                 onChange={handleChange}
-                checked={sideBarData.furnished}
+                checked={sideBarData.furnished} // checked if furnished is true
               />
               <span>Furnished</span>
             </div>
