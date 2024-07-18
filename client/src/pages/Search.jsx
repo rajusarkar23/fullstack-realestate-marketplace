@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Search() {
   const [sideBarData, setSideBarData] = useState({
@@ -10,8 +11,39 @@ function Search() {
     sort: "created_at",
     order: "desc",
   });
-
   console.log(sideBarData);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    const typeFromUrl = urlParams.get("type");
+    const parkingFromurl = urlParams.get("parking");
+    const furnishedFromUrl = urlParams.get("furnished");
+    const offerFromUrl = urlParams.get("offer");
+    const sortFromUrl = urlParams.get("sort");
+    const orderFromUrl = urlParams.get("order");
+
+    if (
+      searchTermFromUrl ||
+      typeFromUrl ||
+      parkingFromurl ||
+      furnishedFromUrl ||
+      offerFromUrl ||
+      sortFromUrl ||
+      orderFromUrl
+    ) {
+      setSideBarData({
+        searchTerm: searchTermFromUrl || "",
+        type: typeFromUrl || "all",
+        parking: parkingFromurl === "true" ? true : false,
+        furnished: furnishedFromUrl === "true" ? true : false,
+        offer: offerFromUrl === "true" ? true : false,
+        sort: sortFromUrl || "created_at",
+        order: orderFromUrl || "desc",
+      });
+    }
+  }, [location.search]);
 
   const handleChange = (e) => {
     if (
@@ -24,7 +56,7 @@ function Search() {
     }
 
     if (e.target.id === "searchTerm") {
-        // => same as above
+      // => same as above
       setSideBarData({ ...sideBarData, searchTerm: e.target.value });
     }
     if (
@@ -41,19 +73,33 @@ function Search() {
     }
 
     if (e.target.id === "sort_order") {
-        // => sort by created at
-        const sort = e.target.value.split("_")[0] || "created_at"
-        // => sorting order set to desc
-        const order = e.target.value.split("_")[1] || "desc"
+      // => sort by created at
+      const sort = e.target.value.split("_")[0] || "created_at";
+      // => sorting order set to desc
+      const order = e.target.value.split("_")[1] || "desc";
 
-        setSideBarData({...sideBarData, sort, order})
+      setSideBarData({ ...sideBarData, sort, order });
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams();
+    urlParams.set("searchTerm", sideBarData.searchTerm);
+    urlParams.set("type", sideBarData.type);
+    urlParams.set("parking", sideBarData.parking);
+    urlParams.set("furnished", sideBarData.furnished);
+    urlParams.set("offer", sideBarData.offer);
+    urlParams.set("sort", sideBarData.sort);
+    urlParams.set("order", sideBarData.order);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
   };
 
   return (
     <div className="flex flex-col md:flex-row">
       <div className="p-7 border-b-2 md:border-r-2 md:min-h-screen">
-        <form className="flex flex-col gap-8">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
           <div className="flex items-center gap-2">
             <label className="whitespace-nowrap font-semibold">
               Search term
