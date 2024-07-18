@@ -11,6 +11,10 @@ function Search() {
     sort: "created_at",
     order: "desc",
   });
+
+  const [loading, setLoading] = useState(false);
+  const [listings, setListings] = useState([]);
+  console.log(listings);
   console.log(sideBarData);
   const navigate = useNavigate();
 
@@ -43,6 +47,16 @@ function Search() {
         order: orderFromUrl || "desc",
       });
     }
+
+    const fetchListings = async () => {
+      setLoading(true);
+      const searchQuery = urlParams.toString();
+      const res = await fetch(`/api/listing/get?${searchQuery}`);
+      const data = await res.json();
+      setListings(data);
+      setLoading(false);
+    };
+    fetchListings()
   }, [location.search]);
 
   const handleChange = (e) => {
