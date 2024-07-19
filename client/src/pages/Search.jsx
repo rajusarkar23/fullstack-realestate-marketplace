@@ -15,8 +15,9 @@ function Search() {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [showMore, setShowMore] = useState(false);
   console.log(listings);
-  console.log(listings.name)
+  console.log(listings.name);
   console.log(sideBarData);
   const navigate = useNavigate();
 
@@ -55,6 +56,11 @@ function Search() {
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
+      if (data.length > 8) {
+        setShowMore(true);
+      } else {
+        setShowMore(false)
+      }
       setListings(data);
       setLoading(false);
     };
@@ -110,6 +116,20 @@ function Search() {
     urlParams.set("order", sideBarData.order);
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
+  };
+
+  const showMoreOnClick = async () => {
+    const numberOfListings = listings.length;
+    const startIndex = numberOfListings;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json();
+    if (data.length < 9) {
+      setShowMore(false);
+    }
+    setListings([...listings, ...data]);
   };
 
   return (
@@ -203,6 +223,7 @@ function Search() {
               id="sort_order"
               className="border rounded-lg p-3"
             >
+              <option value="default">Sort by</option>
               <option value="regularPrice_desc">Price high to low</option>
               <option value="regularPrice_asc">Price low to high</option>
               <option value="createdAt_desc">Latest</option>
@@ -233,11 +254,18 @@ function Search() {
           )}
           {!loading &&
             listings &&
-            listings.map((listing) => 
+            listings.map((listing) => (
               <ListingItems key={listing._id} listing={listing} />
-            )}
+            ))}
 
-           
+          {showMore && (
+            <button
+              onClick={showMoreOnClick}
+              className="text-green-700 hover:underline p-7 w-full"
+            >
+              Show more
+            </button>
+          )}
         </div>
       </div>
     </div>
