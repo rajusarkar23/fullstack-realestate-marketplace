@@ -93,7 +93,7 @@ function Listing() {
                 <p className="font-semibold text-3xl text-slate-700">{listing.name} at ${listing.regularPrice}</p>
               )}
 
-              {/* For regular price */}
+              {/* For regular price in case of offer available*/}
               {listing.offer && (
                 <p className="font-semibold text-white bg-slate-700 rounded-md w-full max-w-[200px] text-center">Regular price: ${listing.regularPrice}</p>
               )}
