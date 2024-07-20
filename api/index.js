@@ -5,6 +5,7 @@ import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import listingRouter from "./routes/listing.route.js";
 import cookieParser from "cookie-parser";
+import path from "path"
 
 dotenv.config();
 // => db connect
@@ -16,6 +17,8 @@ mongoose
   .catch((err) => {
     console.log("error in connecting db", err);
   });
+
+  const __dirname = path.resolve()
 // => ctreate express app
 const app = express();
 // => allow the json data to our express app
@@ -31,6 +34,14 @@ app.listen(3000, () => {
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
+
+// For running in the server
+app.use(express.static(path.join(__dirname, "client/dist")))
+
+// If you go any addresses other than above mentioned
+app.get("*", (req,res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"))
+})
 
 // => Middleware to handle errors
 app.use((err, req, res, next) => {
