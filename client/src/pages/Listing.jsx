@@ -86,14 +86,13 @@ function Listing() {
             </p>
           )}
           <div className="flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4">
-            {listing.offer && (
-              <p className="text-2xl font-semibold">
-                {listing.name} - ${listing.regularPrice - listing.discountPrice}
-                {listing.type === "rent" && " /month"}
-              </p>
-            )}
-
-            <p className="flex items-center mt-6 gap-2 text-slate-600 text-sm">
+              {listing.offer && (
+                <p className="font-semibold text-3xl text-slate-700">{listing.name} at ${listing.regularPrice - listing.discountPrice}{listing.type === "rent" && "/month"}</p>
+              )}
+              {!listing.offer && (
+                <p className="font-semibold text-3xl text-slate-700">{listing.name} at ${listing.regularPrice}</p>
+              )}
+            <p className="flex items-center mt-2 gap-2 text-slate-600 text-sm">
               <FaMapMarkerAlt className="text-green-700" />
               {listing.address}
             </p>
@@ -102,12 +101,9 @@ function Listing() {
                 {listing.type === "rent" ? "For rent" : "For sale"}
               </p>
 
-              {listing.offer && (
-                <p className="bg-green-900 w-full max-w-[200px] text-white text-center rounded-md">
-                  ${listing.discountedPrice} discount
-                </p>
-              )}
-              <p>{listing.discountPrice}</p>
+              {listing.offer && (<p className="bg-green-900 w-full max-w-[200px] text-white text-center rounded-md">
+                ${listing.discountPrice} discount available
+              </p>)}
             </div>
             <p className="text-slate-800">
               <span className="font-semibold text-black">Description - </span>
