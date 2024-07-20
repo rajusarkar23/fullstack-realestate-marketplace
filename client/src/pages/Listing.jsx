@@ -92,6 +92,11 @@ function Listing() {
               {!listing.offer && (
                 <p className="font-semibold text-3xl text-slate-700">{listing.name} at ${listing.regularPrice}</p>
               )}
+
+              {/* For regular price */}
+              {listing.offer && (
+                <p className="font-semibold text-white bg-slate-700 rounded-md w-full max-w-[200px] text-center">Regular price: ${listing.regularPrice}</p>
+              )}
             <p className="flex items-center mt-2 gap-2 text-slate-600 text-sm">
               <FaMapMarkerAlt className="text-green-700" />
               {listing.address}
