@@ -138,7 +138,7 @@ function Profile() {
   const handleShowListing = async () => {
     try {
       setShowlIstingError(false);
-      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const res = await fetch(`https://fullstack-realestate-marketplace.onrender.com:8080/${currentUser._id}`);
       const data = await res.json();
       if (data.success === false) {
         return;
