@@ -24,7 +24,7 @@ function SignUp() {
     e.preventDefault();
     try {
       dispatch(signInStart());
-      const res = await fetch("https://fullstack-realestate-marketplace.onrender.com:8080/api/auth/signin", {
+      const res = await fetch("https://fullstack-realestate-marketplace.onrender.com/api/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
