@@ -7,6 +7,9 @@ import listingRouter from "./routes/listing.route.js";
 import cookieParser from "cookie-parser";
 import path from "path"
 
+const PORT = process.env.PORT || 3030;
+
+
 dotenv.config();
 // => db connect
 mongoose
@@ -26,8 +29,8 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-app.listen(8080, () => {
-  console.log(`Server is running on port 8080!!!`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 // => index js routes
