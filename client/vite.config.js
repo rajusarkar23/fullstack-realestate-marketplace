@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://fullstack-realestate-marketplace.onrender.com:8080',
+        target: 'https://fullstack-realestate-marketplace.onrender.com',
         secure: false,
       },
     },
